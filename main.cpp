@@ -9,6 +9,7 @@
 #include <iostream>
 #include <map>
 #include <limits>
+#include <cstdlib> // atoi
 
 using namespace std;
 
@@ -17,28 +18,26 @@ int collatzR(uint64_t n); // recursive implementation of collatz
 int collatzI(uint64_t n); // iterative implementation of collatz
 
 /* Menu Functions  */
-int getValidInput(int min, int max);
-void collatzSingleNumber();
-void collatzMostSteps();
+uint64_t getValidInput(int min, uint64_t max);
+void collatzSingleNumber(int argNumber);
+void collatzMostSteps(int argIterations);
 void collatzMenu();
+void parameterError(string exeName);
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2)
+    if (argc < 2) // if program has no arguments, call menu
         collatzMenu();
-    else {
-        string arg = argv[1]; // store parameter in a string
+    else { // if argument is passed
+        string arg1 = argv[1]; // store parameter in a string
+        int number = atoi(argv[2]);
 
-        if (arg == "-1") {
-            collatzSingleNumber();
-        } else if (arg == "-2") {
-            collatzMostSteps();
+        if (arg1 == "-single") {
+            collatzSingleNumber(number);
+        } else if (arg1 == "-steps") {
+            collatzMostSteps(number);
         } else {
-            cerr << argv[0] << ": parameter '" << argv[1] << "' was not recognized." << endl;
-            cerr << "Usage: " << argv[0] << " [-1|-2] \n"
-                << "\t-1\tCalculate a single number. \n"
-                << "\t-2\tCalculate which number takes the most steps within a defined range." << endl;
-            return 1;
+            parameterError(argv[0]);
         }
     }
     return 0;
@@ -85,20 +84,19 @@ int collatzI(uint64_t n)
             steps+=2;
         }
     }
-
     return steps;
 }
 
 /* =============== Menu Functions =============== */
-int getValidInput(int min, int max)
+uint64_t getValidInput(int min, uint64_t max)
 {
-    int input;
+    uint64_t input;
     do {
         cout << " >> ";
         cin >> input;
 
         if (!cin.good() || input < min || input > max) {
-            cout << "Invalid input. Must be between " << min << " and " << max << endl;
+            cout << "Invalid input. Must be between " << min << " and " << max << "\n\n";
             cin.clear();
             cin.ignore(128, '\n');
         } else {
@@ -109,18 +107,29 @@ int getValidInput(int min, int max)
     return input; // only returns once valid input is given
 }
 
-void collatzSingleNumber()
+void collatzSingleNumber(int argNumber)
 {
-    cout << "Enter any natural number: " << endl;
-    int number = getValidInput(1, 10000000000);
+    uint64_t number;
+    if (argNumber < 1 || argNumber > 10000000000) {
+        cout << "Enter any natural number: " << endl;
+        number = getValidInput(1, 10000000000ULL);
+    } else {
+        number = argNumber;
+    }
 
     cout << number << " took " << collatzR(number) << " step(s).";
+    return;
 }
 
-void collatzMostSteps()
+void collatzMostSteps(int argIterations)
 {
-    cout << "Enter number of iterations: " << endl;
-    int iterations = getValidInput(1, 10000000000);
+    uint64_t iterations;
+    if (argIterations < 1 || argIterations > 10000000000) {
+        cout << "Enter number of iterations: " << endl;
+        iterations = getValidInput(1, 10000000000ULL);
+    } else {
+        iterations = argIterations;
+    }
 
     // Track which number took the most steps
     map<string, int> mostSteps {{"number", 1}, {"steps", 0}};
@@ -140,6 +149,7 @@ void collatzMostSteps()
 
     cout << "\nFor numbers from 1 to " << iterations << ", \n";
     cout << mostSteps["number"] << " took the most steps with " << mostSteps["steps"] << " iterations.";
+    return;
 }
 
 void collatzMenu()
@@ -149,13 +159,22 @@ void collatzMenu()
     cout << "\t1. Calculate a single number \n"
         << "\t2. Find number which takes most steps within a range" << endl;
 
-    int number;
+    uint64_t number;
     switch (getValidInput(1, 2)) {
     case 1:
-        collatzSingleNumber();
+        collatzSingleNumber(0);
         break;
     case 2:
-        collatzMostSteps();
+        collatzMostSteps(0);
         break;
     } // END OF SWITCH
+    return;
+}
+
+void parameterError(string exeName)
+{
+    cerr << "Usage: " << exeName << " [-single | -steps] [1 ... 10000000000] \n"
+        << "    -single\tCalculates the number following this argument. \n"
+        << "    -steps\tCalculate which number takes the most steps within \n\t\ta range defined by the number folllowing this argument. \n" << endl;
+    return;
 }
