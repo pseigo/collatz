@@ -67,7 +67,7 @@ int getValidInput(int min, int max)
         cin >> input;
 
         if (!cin.good() || input < min || input > max) {
-            cout << "Invalid input. Must be between " << max << " and " << max << endl;
+            cout << "Invalid input. Must be between " << min << " and " << max << endl;
             cin.clear();
             cin.ignore(128, '\n');
         } else {
@@ -83,7 +83,7 @@ void collatzSingleNumber()
     cout << "Enter any natural number: " << endl;
     int number = getValidInput(1, 10000000000);
 
-    cout << number << " took " << collatzR(number) << " step(s). \n\n";
+    cout << number << " took " << collatzR(number) << " step(s).";
 }
 
 void collatzMostSteps()
@@ -107,8 +107,8 @@ void collatzMostSteps()
         }
     }
 
-    cout << "\n\nFor numbers from 1 to " << iterations << ", \n";
-    cout << mostSteps["number"] << " took the most steps with " << mostSteps["steps"] << " iterations." << endl;
+    cout << "\nFor numbers from 1 to " << iterations << ", \n";
+    cout << mostSteps["number"] << " took the most steps with " << mostSteps["steps"] << " iterations.";
 }
 
 void collatzMenu()
@@ -131,6 +131,22 @@ void collatzMenu()
 
 int main(int argc, char *argv[])
 {
-    collatzMenu();
+    if (argc != 2)
+        collatzMenu();
+    else {
+        string arg = argv[1]; // store parameter in a string
+
+        if (arg == "-1") {
+            collatzSingleNumber();
+        } else if (arg == "-2") {
+            collatzMostSteps();
+        } else {
+            cerr << argv[0] << ": parameter '" << argv[1] << "' was not recognized." << endl;
+            cerr << "Usage: " << argv[0] << " [-1|-2] \n"
+                << "\t-1\tCalculate a single number. \n"
+                << "\t-2\tCalculate which number takes the most steps within a defined range." << endl;
+            return 1;
+        }
+    }
     return 0;
 }
