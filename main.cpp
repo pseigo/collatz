@@ -63,7 +63,7 @@ int getValidInput(int min, int max)
 {
     int input;
     do {
-        cout << "> ";
+        cout << " >> ";
         cin >> input;
 
         if (!cin.good() || input < min || input > max) {
@@ -71,56 +71,66 @@ int getValidInput(int min, int max)
             cin.clear();
             cin.ignore(128, '\n');
         } else {
+            cout << '\n';
             break;
         }
-    } while (true)
+    } while (true);
     return input; // only returns once valid input is given
+}
+
+void collatzSingleNumber()
+{
+    cout << "Enter any natural number: " << endl;
+    int number = getValidInput(1, 10000000000);
+
+    cout << number << " took " << collatzR(number) << " step(s). \n\n";
+}
+
+void collatzMostSteps()
+{
+    cout << "Enter number of iterations: " << endl;
+    int iterations = getValidInput(1, 10000000000);
+
+    // Track which number took the most steps
+    map<string, int> mostSteps {{"number", 1}, {"steps", 0}};
+    int stepsTaken;
+
+    for (int currentNum = 1; currentNum < iterations; currentNum++) {
+        stepsTaken = collatzI(currentNum);
+
+        // if currentNum took more stepsTaken than recorded in mostSteps, update the record
+        if (stepsTaken > mostSteps["steps"]) {
+            cout << "New record: " << currentNum << " with " << stepsTaken << " steps." << endl;
+
+            mostSteps["number"] = currentNum;
+            mostSteps["steps"] = stepsTaken;
+        }
+    }
+
+    cout << "\n\nFor numbers from 1 to " << iterations << ", \n";
+    cout << mostSteps["number"] << " took the most steps with " << mostSteps["steps"] << " iterations." << endl;
 }
 
 void collatzMenu()
 {
     cout << "This program calculates the steps taken for \n"
-        << "a given number according to the Collatz"
-        << "Conjecture. \n" << endl;
-    cout << "1. Calculate a single number \n"
-        << "2. Find number which takes most steps within a range" << endl;
+        << "a given number according to the Collatz Conjecture. \n" << endl;
+    cout << "\t1. Calculate a single number \n"
+        << "\t2. Find number which takes most steps within a range" << endl;
 
+    int number;
     switch (getValidInput(1, 2)) {
     case 1:
-        cout << "Enter any natural number: " << endl;
-        int number = getValidInput(1, 10000000000);
-
-        cout << number << " took " << collatzR(number) << " step(s). \n\n";
+        collatzSingleNumber();
         break;
     case 2:
-        cout << "Enter number of iterations: " >> endl;
-        int number = getValidInput(1, 10000000000),
-            stepsTaken;
-
-        // Track which number took the most steps
-        map<string, int> mostSteps {{"number", 1}, {"steps", 1}};
-
-        for (int number = 1; number < iterations; number++) {
-            stepsTaken = collatzI(number);
-
-            if (stepsTaken > mostSteps["steps"]) {
-                cout << "New record: " << number << " with " << stepsTaken << " steps." << endl;
-                //cout << number << " replaces " << mostSteps["number"] << " which took " << mostSteps["steps"] << " steps.\n" << endl;
-
-                mostSteps["number"] = number;
-                mostSteps["steps"] = stepsTaken;
-            }
-        }
-
-        cout << "\n\nFor numbers from 1 to " << iterations << ", \n";
-        cout << mostSteps["number"] << " took the most steps with " << mostSteps["steps"] << " iterations." << endl;
+        collatzMostSteps();
+        break;
     } // END OF SWITCH
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    int stepsTaken;
-    int iterations = 1000000000; // iterations to test collatz conjecture
-
+    collatzMenu();
     return 0;
 }
