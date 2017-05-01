@@ -6,12 +6,43 @@
  * Conjecture.
 */
 
-
 #include <iostream>
 #include <map>
 #include <limits>
 
 using namespace std;
+
+/* Collatz Functions */
+int collatzR(uint64_t n); // recursive implementation of collatz
+int collatzI(uint64_t n); // iterative implementation of collatz
+
+/* Menu Functions  */
+int getValidInput(int min, int max);
+void collatzSingleNumber();
+void collatzMostSteps();
+void collatzMenu();
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+        collatzMenu();
+    else {
+        string arg = argv[1]; // store parameter in a string
+
+        if (arg == "-1") {
+            collatzSingleNumber();
+        } else if (arg == "-2") {
+            collatzMostSteps();
+        } else {
+            cerr << argv[0] << ": parameter '" << argv[1] << "' was not recognized." << endl;
+            cerr << "Usage: " << argv[0] << " [-1|-2] \n"
+                << "\t-1\tCalculate a single number. \n"
+                << "\t-2\tCalculate which number takes the most steps within a defined range." << endl;
+            return 1;
+        }
+    }
+    return 0;
+}
 
 // recursive implementation of collatz
 int collatzR(uint64_t n)
@@ -127,26 +158,4 @@ void collatzMenu()
         collatzMostSteps();
         break;
     } // END OF SWITCH
-}
-
-int main(int argc, char *argv[])
-{
-    if (argc != 2)
-        collatzMenu();
-    else {
-        string arg = argv[1]; // store parameter in a string
-
-        if (arg == "-1") {
-            collatzSingleNumber();
-        } else if (arg == "-2") {
-            collatzMostSteps();
-        } else {
-            cerr << argv[0] << ": parameter '" << argv[1] << "' was not recognized." << endl;
-            cerr << "Usage: " << argv[0] << " [-1|-2] \n"
-                << "\t-1\tCalculate a single number. \n"
-                << "\t-2\tCalculate which number takes the most steps within a defined range." << endl;
-            return 1;
-        }
-    }
-    return 0;
 }
