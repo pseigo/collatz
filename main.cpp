@@ -30,7 +30,16 @@ int main(int argc, char *argv[])
         collatzMenu();
     else { // if argument is passed
         string arg1 = argv[1]; // store parameter in a string
-        int number = atoi(argv[2]);
+        int number;
+
+        // deals with the case of only passing in one argument.
+        // avoids "Segmentation fault" caused by accessing non-existent element.
+        if (argc == 3) {
+            number = atoi(argv[2]); // convert number argument to string
+        } else {
+            parameterError(argv[0]);
+            return 1;
+        }
 
         if (arg1 == "-single") {
             collatzSingleNumber(number);
@@ -38,6 +47,7 @@ int main(int argc, char *argv[])
             collatzMostSteps(number);
         } else {
             parameterError(argv[0]);
+            return 1;
         }
     }
     return 0;
@@ -117,7 +127,7 @@ void collatzSingleNumber(int argNumber)
         number = argNumber;
     }
 
-    cout << number << " took " << collatzR(number) << " step(s).";
+    cout << number << " took " << collatzR(number) << " step(s)." << endl;
     return;
 }
 
@@ -148,7 +158,7 @@ void collatzMostSteps(int argIterations)
     }
 
     cout << "\nFor numbers from 1 to " << iterations << ", \n";
-    cout << mostSteps["number"] << " took the most steps with " << mostSteps["steps"] << " iterations.";
+    cout << mostSteps["number"] << " took the most steps with " << mostSteps["steps"] << " iterations." << endl;
     return;
 }
 
